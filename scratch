@@ -1,0 +1,7 @@
+//get container ip
+sudo docker ps -a //get container id
+sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
+
+//connet to mongodb using cli
+mongo "mongodb://testUser:testPass@<container ip>:<port - 27017>/?authSource=admin"
+
