@@ -26,5 +26,14 @@ services:
             - mongo
         ports:
           - "8888:8081"
+    nodejs-api:
+        image: angeld11235/ts-clone-nodejs
+        restart: always
+        environment:
+            - PORT=3000
+        ports:
+            - "3000:3000"
+        depends_on:
+            - mongo
 volumes:
   shared_database:
