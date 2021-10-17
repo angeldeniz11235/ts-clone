@@ -3,7 +3,7 @@ version: '3'
 services:
     mongo:
         image: mongo
-        restart: never
+        # restart: never
         environment:
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
@@ -12,7 +12,7 @@ services:
             - shared_database:/data/db
     mongo-express:
         image: mongo-express
-        restart: never
+        # restart: never
         environment:
             - ME_CONFIG_MONGODB_SERVER=mongo
             - ME_CONFIG_MONGODB_PORT=27017
@@ -28,7 +28,7 @@ services:
           - "8888:8081"
     nodejs-api:
         image: angeld11235/ts-clone-nodejs:latest
-        restart: never
+        # restart: never
         environment:
             - NODE_ENV=production
             # - PORT=3000
