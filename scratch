@@ -11,3 +11,5 @@ sudo docker-compose -f db_stack.yml up -d
 //run shell script to bring images up
 . db_up.sh
 
+//bring everything down
+sudo docker-compose -f db_stack.yml down
