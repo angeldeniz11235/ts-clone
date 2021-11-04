@@ -13,3 +13,5 @@ sudo docker-compose -f db_stack.yml up -d
 
 //bring everything down
 sudo docker-compose -f db_stack.yml down
+
+ NODE_API_IP=$(hostname --all-ip-addresses | cut -d" " -f1)

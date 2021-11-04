@@ -1,31 +1,51 @@
-version: '3'
+version: "3"
 
 services:
-    mongo:
-        image: mongo
-        # restart: never
+    mysql_db_container:
+        image: mysql:latest
+        command: --default-authentication-plugin=mysql_native_password
         environment:
-            - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
-            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
-            - MONGO_INITDB_DATABASE=project
-        volumes: 
-            - shared_database:/data/db
-    mongo-express:
-        image: mongo-express
-        # restart: never
-        environment:
-            - ME_CONFIG_MONGODB_SERVER=mongo
-            - ME_CONFIG_MONGODB_PORT=27017
-            - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
-            - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
-            - ME_CONFIG_MONGODB_AUTH_USERNAME=${MONGO_ROOT_USER}
-            - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MONGO_ROOT_PASSWORD}
-            - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_LOGIN}
-            - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
-        depends_on:
-            - mongo
+            MYSQL_ROOT_PASSWORD: ${MSQL_ROOT_PASSWORD}
+            DB_PATH_HOST: /tmp/mysql #this is the host location where mysql data will be stored.
         ports:
-          - "8888:8081"
+            - 3306:3306
+        volumes:
+            - shared_database:/var/lib/mysql
+        network_mode: host
+    adminer_container:
+        image: adminer:latest
+        environment:
+            ADMINER_DEFAULT_SERVER: mysql_db_container
+        ports:
+            - 8080:8080
+        network_mode: host
+    # mongo:
+    #     image: mongo
+    #     # restart: never
+    #     environment:
+    #         - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+    #         - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+    #         - MONGO_INITDB_DATABASE=project
+    #     volumes:
+    #         - shared_database:/data/db
+
+    # mongo-express:
+    #     image: mongo-express
+    #     # restart: never
+    #     environment:
+    #         - ME_CONFIG_MONGODB_SERVER=mongo
+    #         - ME_CONFIG_MONGODB_PORT=27017
+    #         - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+    #         - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+    #         - ME_CONFIG_MONGODB_AUTH_USERNAME=${MONGO_ROOT_USER}
+    #         - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MONGO_ROOT_PASSWORD}
+    #         - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_LOGIN}
+    #         - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
+    #     depends_on:
+    #         - mongo
+    #     ports:
+    #         - "8888:8081"
+
     nodejs-api:
         image: angeld11235/ts-clone-nodejs:latest
         # restart: never
@@ -36,5 +56,15 @@ services:
             - "3000:3000"
         depends_on:
             - mongo
+        network_mode: host
+        # networks:
+        #     default:
+        #         ipv4_address: 172.16.238.10
+
 volumes:
-  shared_database:
+    shared_database:
+# networks:
+#     default:
+#         config:
+#             - subnet: 172.16.238.0/24
+#               gateway: 172.16.238.1
