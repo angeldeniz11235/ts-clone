@@ -11,14 +11,14 @@ services:
             - 3306:3306
         volumes:
             - shared_database:/var/lib/mysql
-        network_mode: host
+        #network_mode: host
     adminer_container:
         image: adminer:latest
         environment:
             ADMINER_DEFAULT_SERVER: mysql_db_container
         ports:
             - 8080:8080
-        network_mode: host
+       # network_mode: host
     # mongo:
     #     image: mongo
     #     # restart: never
@@ -50,13 +50,14 @@ services:
         image: angeld11235/ts-clone-nodejs:latest
         # restart: never
         environment:
-            - NODE_ENV=production
+           - MYSQL_DB_ADDRESS=${MYSQL_DB_ADDRESS} #get db address from .env file 
+            #- NODE_ENV=production
             # - PORT=3000
         ports:
             - "3000:3000"
         depends_on:
-            - mongo
-        network_mode: host
+            - mysql_db_container #make sure mongo is running
+        #network_mode: host
         # networks:
         #     default:
         #         ipv4_address: 172.16.238.10
