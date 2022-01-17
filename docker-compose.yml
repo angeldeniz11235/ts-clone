@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  #  mysql_db_container:
+  #      image: mysql:latest
+  #      command: --default-authentication-plugin=mysql_native_password
+  #      environment:
+  #          MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #          DB_PATH_HOST: /tmp/mysql #this is the host location where mysql data will be stored.
+  #      ports:
+  #          - 3306:3306
+  #      volumes:
+  #          - shared_database:/var/lib/mysql
+  #      #network_mode: host
+    adminer_container:
+        image: adminer:latest
+        #  depends_on:
+        #   - mysql_db_container
+        environment:
+                ADMINER_DEFAULT_SERVER: mysql
+        ports:
+            - 8080:8080
+              #   network_mode: host
+              #
+    nodejs-api:
+        image: angeld11235/ts-clone-nodejs:latest
+        restart: always
+        environment:
+           MYSQL_DB_ADDRESS: 107.152.35.192
+            #- NODE_ENV=production
+            # - PORT=3000
+        ports:
+            - "3000:3000"
+        # depends_on:
+            # - mysql_db_container #make sure mysql is running
+        #network_mode: host
+        # networks:
+        #     default:
+        #         ipv4_address: 172.16.238.10
+
+    wordpress:
+       #  depends_on:
+       #    - mysql_db_container
+       image: wordpress:latest
+       volumes:
+         - wordpress_data:/var/www/html
+       ports:
+         - "8000:80"
+       restart: always
+       environment:
+         WORDPRESS_DB_HOST: 107.152.35.192
+         WORDPRESS_DB_USER: root
+         WORDPRESS_DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+         WORDPRESS_DB_NAME: wordpress
+              
+volumes:
+    shared_database: {}
+    wordpress_data: {}
